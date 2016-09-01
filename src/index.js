@@ -4,20 +4,14 @@
  * Components
  */
 
-var hh = ohh(React.createElement);
+['div', 'span', 'ul', 'li', 'a', 'h1', 'h2', 'input', 'form', 'textarea', 'button'].map(elem => { window[elem] = React.DOM[elem]; });
 
-var div  = hh.div,
-    span = hh.span,
-    ul = hh.ul,
-    li = hh.li,
-    a = hh.a,
-    h1 = hh.h1,
-    h2 = hh.h2,
-    input = hh.input,
-    form = hh.form,
-    textarea = hh.textarea,
-    button = hh.button;
-
+var cities = [
+  'Warsaw',
+  'Washington',
+  'Piaseczno',
+  'Chicago'
+];
 
 var ContactForm = React.createFactory(React.createClass({
   propTypes: {
@@ -27,7 +21,6 @@ var ContactForm = React.createFactory(React.createClass({
   },
 
   onNameChange: function(e) {
-    console.log(e.target.value);
     this.props.onChange(Object.assign({}, this.props.value, {name: e.target.value}));
   },
 
@@ -49,13 +42,25 @@ var ContactForm = React.createFactory(React.createClass({
 
     return (
       form({onSubmit: this.onSubmit, className: 'ContactForm', noValidate: true},
-        input({
-          type: 'text',
-          className: errors.name && 'ContactForm-error',
-          placeholder: 'Name (required)',
-          value: this.props.value.name,
-          onChange: this.onNameChange,
-        }),
+        div({id: 'dropdiv'},
+          input({
+            type: 'text',
+            className: errors.name && 'ContactForm-error',
+            placeholder: 'Name (required)',
+            value: this.props.value.name,
+            onChange: this.onNameChange,
+          }),
+          ul({id: 'drop'},
+            // Use arrow function because with normal function, this will reference to global window
+            // https://www.sitepoint.com/bind-javascripts-this-keyword-react/
+            cities.reduce((acc, element) => {
+              if(this.props.value.name.trim() !== '' && element.startsWith(this.props.value.name)) {
+                acc.push(li(null, element));
+              }
+              return acc;
+            }, [])
+          )
+        ),
         input({
           type: 'email',
           className: errors.email && 'ContactForm-error',
