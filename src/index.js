@@ -4,7 +4,10 @@
  * Components
  */
 
-['div', 'span', 'ul', 'li', 'a', 'h1', 'h2', 'input', 'form', 'textarea', 'button'].map(elem => { window[elem] = React.DOM[elem]; });
+(function() {
+  var global = this;
+  ['div', 'span', 'ul', 'li', 'a', 'h1', 'h2', 'input', 'form', 'textarea', 'button'].map(elem => { global[elem] = React.DOM[elem]; });
+}).call(this);
 
 var cities = [
   'Warsaw',
@@ -54,7 +57,7 @@ var ContactForm = React.createFactory(React.createClass({
             // Use arrow function because with normal function, this will reference to global window
             // https://www.sitepoint.com/bind-javascripts-this-keyword-react/
             cities.reduce((acc, element) => {
-              if(this.props.value.name.trim() !== '' && element.startsWith(this.props.value.name)) {
+              if(this.props.value.name.trim() !== '' && element.toLowerCase().startsWith(this.props.value.name.toLowerCase())) {
                 acc.push(li(null, element));
               }
               return acc;
