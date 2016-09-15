@@ -41,13 +41,13 @@ if (typeof Object.assign != 'function') {
  * Components
  */
 
-var ContactForm = React.createFactory(React.createClass({
+var CitiesForm = React.createFactory(React.createClass({
   propTypes: {
     value: React.PropTypes.object.isRequired,
     onChange: React.PropTypes.func.isRequired,
   },
 
-  onNameChange: function(e) {
+  onSearchChange: function(e) {
     this.props.onChange(Object.assign({}, this.props.value, {name: e.target.value}));
   },
 
@@ -58,7 +58,7 @@ var ContactForm = React.createFactory(React.createClass({
           type: 'text',
           placeholder: 'City',
           value: this.props.value.name,
-          onChange: this.onNameChange,
+          onChange: this.onSearchChange,
         }),
         ul({id: 'drop'},
           // Use arrow function or bind, otherwise `this` will reference to window
@@ -81,20 +81,16 @@ var ContactForm = React.createFactory(React.createClass({
  * Constants
  */
 
-
-var CONTACT_TEMPLATE = {name: ""};
-
+var SEARCH_TEMPLATE = {name: ""};
 
 
 /*
  * Actions
  */
 
-
-function updateNewContact(contact) {
-  setState({ newContact: contact });
+function updateSearch(contact) {
+  setState({ newSearch: contact });
 }
-
 
 /*
  * Model
@@ -109,9 +105,9 @@ function setState(changes) {
   Object.assign(state, changes);
 
   ReactDOM.render(
-    ContactForm(Object.assign({}, state, {
-      value: state.newContact,
-      onChange: updateNewContact,
+    CitiesForm(Object.assign({}, state, {
+      value: state.newSearch,
+      onChange: updateSearch,
     })),
     document.getElementById('app')
   );
@@ -119,6 +115,6 @@ function setState(changes) {
 
 // Set initial data
 setState({
-  newContact: Object.assign({}, CONTACT_TEMPLATE),
+  newSearch: Object.assign({}, SEARCH_TEMPLATE),
 });
 
