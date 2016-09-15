@@ -13,41 +13,33 @@ var cities = [
  * Components
  */
 
-var CitiesForm = React.createFactory(React.createClass({
-  propTypes: {
-    value: React.PropTypes.object.isRequired,
-    onChange: React.PropTypes.func.isRequired,
-  },
 
-  onSearchChange: function(e) {
-    this.props.onChange(Object.assign({}, this.props.value, {name: e.target.value}));
-  },
-
-  render: function() {
-    return (
-      div({id: 'dropdiv'},
-        input({
-          type: 'text',
-          placeholder: 'City',
-          value: this.props.value.name,
-          onChange: this.onSearchChange,
-        }),
-        ul({id: 'drop'},
-          // Use arrow function or bind, otherwise `this` will reference to window
-          // https://www.sitepoint.com/bind-javascripts-this-keyword-react/
-          cities.reduce(function(acc, element) {
-            var input = this.props.value.name.toLowerCase();
-            if(this.props.value.name.trim() !== '' && element.toLowerCase().substring(0, input.length) === input) {
-              acc.push(li(null, element));
-            }
-            return acc;
-          }.bind(this), [])
-        )
+function CitiesForm (props) {
+  return (
+    div({id: 'dropdiv'},
+      input({
+        type: 'text',
+        placeholder: 'City',
+        value: props.value.name,
+        onChange: props.onChange,
+      }),
+      ul({id: 'drop'},
+        cities.reduce(function(acc, element) {
+          var input = props.value.name.toLowerCase();
+          if(props.value.name.trim() !== '' && element.toLowerCase().substring(0, input.length) === input) {
+            acc.push(li(null, element));
+          }
+          return acc;
+        }, [])
       )
-    );
-  },
-}));
+    )
+  );
+}
 
+CitiesForm.propTypes = {
+  value: React.PropTypes.object.isRequired,
+  onChange: React.PropTypes.func.isRequired,
+};
 
 /*
  * Constants
@@ -60,8 +52,8 @@ var SEARCH_TEMPLATE = {name: ""};
  * Actions
  */
 
-function updateSearch(search) {
-  setState({ newSearch: search });
+function updateSearch(e) {
+  setState({ newSearch: {name: e.target.value} });
 }
 
 /*
@@ -87,6 +79,6 @@ function setState(changes) {
 
 // Set initial data
 setState({
-  newSearch: Object.assign({}, SEARCH_TEMPLATE),
+  newSearch: SEARCH_TEMPLATE,
 });
 
