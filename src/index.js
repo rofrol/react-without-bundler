@@ -7,34 +7,6 @@ var cities = [
   'Chicago'
 ];
 
-// Object.assign polyfill
-// https://developer.mozilla.org/pl/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-
-if (typeof Object.assign != 'function') {
-  (function () {
-    Object.assign = function (target) {
-      'use strict';
-      // We must check against these specific cases.
-      if (target === undefined || target === null) {
-        throw new TypeError('Cannot convert undefined or null to object');
-      }
-
-      var output = Object(target);
-      for (var index = 1; index < arguments.length; index++) {
-        var source = arguments[index];
-        if (source !== undefined && source !== null) {
-          for (var nextKey in source) {
-            if (source.hasOwnProperty(nextKey)) {
-              output[nextKey] = source[nextKey];
-            }
-          }
-        }
-      }
-      return output;
-    };
-  })();
-}
-
 ['div', 'span', 'ul', 'li', 'a', 'h1', 'h2', 'input', 'form', 'textarea', 'button'].map(function(elem) { this[elem] = React.DOM[elem]; });
 
 /*
@@ -88,8 +60,8 @@ var SEARCH_TEMPLATE = {name: ""};
  * Actions
  */
 
-function updateSearch(contact) {
-  setState({ newSearch: contact });
+function updateSearch(search) {
+  setState({ newSearch: search });
 }
 
 /*
