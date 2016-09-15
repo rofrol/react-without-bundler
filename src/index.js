@@ -1,9 +1,4 @@
-// from http://jamesknelson.com/learn-raw-react-ridiculously-simple-forms/
-
-(function() {
-  var global = this;
-  ['div', 'span', 'ul', 'li', 'a', 'h1', 'h2', 'input', 'form', 'textarea', 'button'].map(elem => { global[elem] = React.DOM[elem]; });
-}).call(this);
+// inspired by http://jamesknelson.com/learn-raw-react-ridiculously-simple-forms/
 
 var cities = [
   'Warsaw',
@@ -11,6 +6,36 @@ var cities = [
   'Piaseczno',
   'Chicago'
 ];
+
+// Object.assign polyfill
+// https://developer.mozilla.org/pl/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+
+if (typeof Object.assign != 'function') {
+  (function () {
+    Object.assign = function (target) {
+      'use strict';
+      // We must check against these specific cases.
+      if (target === undefined || target === null) {
+        throw new TypeError('Cannot convert undefined or null to object');
+      }
+
+      var output = Object(target);
+      for (var index = 1; index < arguments.length; index++) {
+        var source = arguments[index];
+        if (source !== undefined && source !== null) {
+          for (var nextKey in source) {
+            if (source.hasOwnProperty(nextKey)) {
+              output[nextKey] = source[nextKey];
+            }
+          }
+        }
+      }
+      return output;
+    };
+  })();
+}
+
+['div', 'span', 'ul', 'li', 'a', 'h1', 'h2', 'input', 'form', 'textarea', 'button'].map(function(elem) { this[elem] = React.DOM[elem]; });
 
 /*
  * Components
@@ -27,8 +52,6 @@ var ContactForm = React.createFactory(React.createClass({
   },
 
   render: function() {
-    var errors = this.props.value.errors || {};
-
     return (
       div({id: 'dropdiv'},
         input({
@@ -38,14 +61,15 @@ var ContactForm = React.createFactory(React.createClass({
           onChange: this.onNameChange,
         }),
         ul({id: 'drop'},
-          // Use arrow function because with normal function, this will reference to global window
+          // Use arrow function or bind, otherwise `this` will reference to window
           // https://www.sitepoint.com/bind-javascripts-this-keyword-react/
-          cities.reduce((acc, element) => {
-            if(this.props.value.name.trim() !== '' && element.toLowerCase().startsWith(this.props.value.name.toLowerCase())) {
+          cities.reduce(function(acc, element) {
+            var input = this.props.value.name.toLowerCase();
+            if(this.props.value.name.trim() !== '' && element.toLowerCase().substring(0, input.length) === input) {
               acc.push(li(null, element));
             }
             return acc;
-          }, [])
+          }.bind(this), [])
         )
       )
     );
@@ -97,3 +121,4 @@ function setState(changes) {
 setState({
   newContact: Object.assign({}, CONTACT_TEMPLATE),
 });
+
