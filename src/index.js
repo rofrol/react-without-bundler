@@ -7,7 +7,7 @@ var cities = [
   'Chicago'
 ];
 
-['div', 'span', 'ul', 'li', 'a', 'h1', 'h2', 'input', 'form', 'textarea', 'button'].map(function(elem) { this[elem] = React.DOM[elem]; });
+['div', 'ul', 'li', 'input', 'form'].map(function(elem) { this[elem] = React.DOM[elem]; });
 
 /*
  * Components
